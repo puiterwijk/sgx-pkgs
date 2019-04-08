@@ -1,0 +1,2 @@
+%global sign_cert /somewhere/signing.pem
+%global sign_key /somewhere/signing.key.pem

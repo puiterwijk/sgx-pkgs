@@ -1,5 +1,4 @@
-%global sign_cert /home/puiterwijk/Documents/Security/CodeSigning/kmod/signing.pem
-%global sign_key /home/puiterwijk/Documents/Security/CodeSigning/kmod/signing.key.pem
+%include config
 
 Name:           linux-sgx-driver
 Version:        2.5
@@ -12,6 +11,8 @@ Summary:        Intel SGX Linux* Driver
 License:  BSD or GPLv2+
 URL:      https://github.com/intel/linux-sgx-driver
 Source0:  https://github.com/intel/linux-sgx-driver/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
+
+Source1:  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/sign-file.c
 
 # SGX exists only for x86_64
 ExclusiveArch: x86_64
@@ -37,8 +38,9 @@ The linux-sgx-driver project hosts the out-of-tree driver for the Linux Intel(R)
 
 
 %build
+gcc -lcrypto %{SOURCE1} -o sign-file
 make
-sign-file sha256 %{sign_key} %{sign_cert} isgx.ko
+./sign-file sha256 %{sign_key} %{sign_cert} isgx.ko
 
 
 %install
