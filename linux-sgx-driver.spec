@@ -18,9 +18,8 @@ Source1:  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/pla
 ExclusiveArch: x86_64
 
 %global kernelrela %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel | head -1)
-%global kernelrel %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel | head -1 | sed -e 's/\.x86_64//')
-%global kernelrel 5.0.3-200.fc29
-%global kernelrela 5.0.3-200.fc29.x86_64
+%include kernelrel_override
+%global kernelrel %(echo "%kernelrela" | sed -e 's/\.x86_64//')
 
 BuildRequires:  kernel-devel
 Requires:	kernel%{?_isa} == %{kernelrel}
