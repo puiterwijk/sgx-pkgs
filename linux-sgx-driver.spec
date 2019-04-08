@@ -12,14 +12,12 @@ License:  BSD or GPLv2+
 URL:      https://github.com/intel/linux-sgx-driver
 Source0:  https://github.com/intel/linux-sgx-driver/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 
-Source1:  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/scripts/sign-file.c
-
 # SGX exists only for x86_64
 ExclusiveArch: x86_64
 
-%global kernelrela %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel | head -1)
+%global kernelrel %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel | head -1)
 %include kernelrel_override
-%global kernelrel %(echo "%kernelrela" | sed -e 's/\.x86_64//')
+%global kernelrela %{kernelrel}.x86_64
 
 BuildRequires:  kernel-devel
 Requires:	kernel%{?_isa} == %{kernelrel}
@@ -37,9 +35,8 @@ The linux-sgx-driver project hosts the out-of-tree driver for the Linux Intel(R)
 
 
 %build
-gcc -lcrypto %{SOURCE1} -o sign-file
-make
-./sign-file sha256 %{sign_key} %{sign_cert} isgx.ko
+make -C /lib/modules/%{kernelrela}/build SUBDIRS=`pwd` modules
+/lib/modules/%{kernelrela}/build/scripts/sign-file sha256 %{sign_key} %{sign_cert} isgx.ko
 
 
 %install
@@ -50,7 +47,7 @@ install isgx.ko %{buildroot}/lib/modules/%{kernelrela}/kernel/drivers/intel/sgx
 %files
 %license License.txt
 %doc README.md
-/lib/modules/%{kernelrela}/kernel/drivers/intel/sgx/isgx.ko
+/lib/modules/%{kernelrela}/kernel/drivers/intel
 
 
 %post
