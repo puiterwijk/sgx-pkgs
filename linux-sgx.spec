@@ -39,8 +39,6 @@ The repository provides a reference implementation of a Launch Enclave for 'Flex
 
 
 %prep
-echo "foo%{warnings_ignore}bar"
-exit 1
 %autosetup -n linux-sgx-sgx_%{version}
 
 
