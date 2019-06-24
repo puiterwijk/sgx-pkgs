@@ -15,7 +15,7 @@ Source0:  https://github.com/intel/linux-sgx-driver/archive/%{commit}/%{name}-%{
 # SGX exists only for x86_64
 ExclusiveArch: x86_64
 
-%global kernelrel %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel | head -1)
+%global kernelrel %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel-devel | head -1)
 #%include kernelrel_override
 %global kernelrela %{kernelrel}.x86_64
 
