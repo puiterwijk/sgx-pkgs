@@ -6,12 +6,13 @@ Summary:        Intel SGX for Linux
 License:  BSD or GPLv2+
 URL:      https://github.com/intel/linux-sgx
 Source0:  https://github.com/intel/linux-sgx/archive/sgx_%{version}.tar.gz
+Source1:  sgx_packer.py
 
 # SGX exists only for x86_64
 ExclusiveArch: x86_64
 
 # General tools
-BuildRequires: gcc-c++ autoconf automake libtool
+BuildRequires: gcc-c++ autoconf automake libtool systemd
 # For the SDK
 BuildRequires: ocaml ocaml-ocamlbuild redhat-rpm-config openssl-devel wget python
 # For the Platform SoftWare (PSW, includes AESMD)
@@ -43,9 +44,35 @@ make sdk_install_pkg psw_install_pkg DEBUG=1
 
 
 %install
+mkdir %{_builddir}/out
+python3 $SOURCE1 %{_builddir}/out linux/installer/common/{libsgx-enclave-common,psw}/BOMs/*_{base,x64}.txt
+
+mkdir -p %{buildroot}/usr/lib64
+cp %{_builddir}/out/package/lib64/*.so %{buildroot}/usr/lib64/
+
+mkdir -p %{buildroot}/var/opt/aesmd %{buildroot}/etc
+cp -rf %{_builddir}/out/package/aesm/data %{buildroot}/var/opt/aesmd/
+cp -rf %{_builddir}/out/package/aesm/conf/aesmd.conf %{buildroot}/etc/aesmd.conf
+rm -rf %{_builddir}/out/package/aesm/{data,conf}
+
+mkdir -p %{buildroot}/var/run/aesmd
+
+mkdir -p %{buildroot}%{_unitdir}
+sed -e "s:@aesm_folder@:/opt/intel/sgxpsw/aesm:" %{_builddir}/out/package/aesm/aesmd.service %{buildroot}%{_unitdir}/aesmd.service
+
+mkdir -p %{buildroot}/opt/intel/sgxpsw
+mv %{_builddir}/out/package/aesm %{buildroot}/opt/intel/sgxpsw
 
 
 %files
+/usr/lib64/libsgx_enclave_common.so
+/usr/lib64/libsgx_uae_service.so
+/usr/lib64/libsgx_urts.so
+/etc/aesmd.conf
+/var/opt/aesmd
+/var/run/aesmd
+%{_unitdir}/aesmd.service
+/opt/intel/sgxpsw
 
 
 %changelog
