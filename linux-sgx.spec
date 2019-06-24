@@ -39,8 +39,7 @@ git -c user.name=Builder -c user.email=builder@puiterwijk.org commit -sm init
 
 ./download_prebuilt.sh
 
-#make USE_OPT_LIBS=0 DEBUG=1
-make sdk_install_pkg DEBUG=1
+make sdk_install_pkg psw_install_pkg DEBUG=1
 
 
 %install
