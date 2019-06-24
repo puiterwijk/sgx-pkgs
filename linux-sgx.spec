@@ -45,7 +45,7 @@ git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git extern
 
 ./download_prebuilt.sh
 
-CXXFLAGS="-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal" make psw_install_pkg DEBUG=1
+CXXFLAGS="-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal -Wno-error=redundant-decls" make psw_install_pkg DEBUG=1
 
 
 %install
