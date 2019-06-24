@@ -1,12 +1,11 @@
 #%include config
+%global commit 2605efa4efb49130a1f4c3bc8d00125105a9c8a4
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           linux-sgx-driver
 Version:        2.5
-Release:        1%{?dist}
+Release:        0.20190624git%{shortcommit}%{?dist}
 Summary:        Intel SGX Linux* Driver
-
-%global commit f7dc97c021b46878910958b285a12e8787593fd8
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 License:  BSD or GPLv2+
 URL:      https://github.com/intel/linux-sgx-driver
