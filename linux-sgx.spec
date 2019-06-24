@@ -14,7 +14,7 @@ Source1:  sgx_packer.py
 ExclusiveArch: x86_64
 
 # General tools
-BuildRequires: gcc-c++ autoconf automake libtool systemd
+BuildRequires: gcc-c++ autoconf automake libtool systemd git
 # For the SDK
 BuildRequires: ocaml ocaml-ocamlbuild redhat-rpm-config openssl-devel wget python
 # For the Platform SoftWare (PSW, includes AESMD)
