@@ -1,4 +1,4 @@
-%include config
+#%include config
 
 Name:           linux-sgx-driver
 Version:        2.5
@@ -16,7 +16,7 @@ Source0:  https://github.com/intel/linux-sgx-driver/archive/%{commit}/%{name}-%{
 ExclusiveArch: x86_64
 
 %global kernelrel %(rpm -q --qf '%%{VERSION}-%%{RELEASE}\\n' kernel | head -1)
-%include kernelrel_override
+#%include kernelrel_override
 %global kernelrela %{kernelrel}.x86_64
 
 BuildRequires:  kernel-devel
