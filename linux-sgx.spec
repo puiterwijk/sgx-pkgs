@@ -69,7 +69,7 @@ rm -rf %{_builddir}/out/package/aesm/{data,conf}
 mkdir -p %{buildroot}/var/run/aesmd
 
 mkdir -p %{buildroot}%{_unitdir}
-sed -e "s:@aesm_folder@:/opt/intel/sgxpsw/aesm:" %{_builddir}/out/package/aesm/aesmd.service >%{buildroot}%{_unitdir}/aesmd.service
+sed -e "s:@aesm_folder@:/opt/intel/sgxpsw/aesm:" -e "/ExecStartPre/d" %{_builddir}/out/package/aesm/aesmd.service  >%{buildroot}%{_unitdir}/aesmd.service
 
 mkdir -p %{buildroot}/opt/intel/sgxpsw
 cp -r %{_builddir}/out/package/aesm %{buildroot}/opt/intel/sgxpsw
