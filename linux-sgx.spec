@@ -22,9 +22,7 @@ BuildRequires: openssl-devel libcurl-devel protobuf-devel cmake
 
 Requires(pre): shadow-utils
 
-%if %{fedora} <= 29
-%global extra_warnings ""
-%else
+%if %{fedora} >= 30
 %global extra_warnings " -Wno-error=deprecated-copy"
 %endif
 
@@ -51,7 +49,7 @@ git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git extern
 
 ./download_prebuilt.sh
 
-CXXFLAGS="-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal -Wno-error=redundant-decls%{extra_warnings}" make psw_install_pkg DEBUG=1
+CXXFLAGS="-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal -Wno-error=redundant-decls%{?extra_warnings}" make psw_install_pkg DEBUG=1
 
 
 %install
