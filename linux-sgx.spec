@@ -22,11 +22,6 @@ BuildRequires: openssl-devel libcurl-devel protobuf-devel cmake
 
 Requires(pre): shadow-utils
 
-%global warnings_ignore "-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal -Wno-error=redundant-decls"
-%if %{fedora} >= 30
-%global warnings_ignore "%{warnings_ignore} -Wno-error=deprecated-copy"
-%endif
-
 
 %description
 Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for application developers seeking to protect select code and data from disclosure or modification.
@@ -50,7 +45,12 @@ git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git extern
 
 ./download_prebuilt.sh
 
-CXXFLAGS="%{warnings_ignore}" make psw_install_pkg DEBUG=1
+%if %{fedora} >= 30
+CXXFLAGS="-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal -Wno-error=redundant-decls -Wno-error=deprecated-copy" \
+%else
+CXXFLAGS="-Wno-error=implicit -Wno-error=conversion -Wno-error=shadow -Wno-error=float-equal -Wno-error=redundant-decls" \
+%endif
+    make psw_install_pkg DEBUG=1
 
 
 %install
