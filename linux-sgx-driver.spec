@@ -36,7 +36,9 @@ The linux-sgx-driver project hosts the out-of-tree driver for the Linux Intel(R)
 
 %build
 make -C /lib/modules/%{kernelrela}/build SUBDIRS=`pwd` modules
+%if 0%{?sign_key}
 /lib/modules/%{kernelrela}/build/scripts/sign-file sha256 %{sign_key} %{sign_cert} isgx.ko
+%endif
 
 
 %install
