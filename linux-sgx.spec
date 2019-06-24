@@ -45,7 +45,7 @@ git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git extern
 
 ./download_prebuilt.sh
 
-make sdk_install_pkg psw_install_pkg DEBUG=1 CXXFLAGS=-Wno-error=implicit
+make sdk_install_pkg psw_install_pkg DEBUG=1 CXXFLAGS+=-Wno-error=implicit
 
 
 %install
