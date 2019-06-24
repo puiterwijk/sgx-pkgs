@@ -31,7 +31,8 @@ The linux-sgx-driver project hosts the out-of-tree driver for the Linux Intel(R)
 
 
 %prep
-%autosetup -v -n linux-sgx-driver-%{commit}
+#%autosetup -v -n linux-sgx-driver-%{commit}
+%autosetup -v -n linux-sgx-driver-%{version}
 
 
 %build
