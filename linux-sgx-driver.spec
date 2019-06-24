@@ -19,7 +19,7 @@ ExclusiveArch: x86_64
 #%include kernelrel_override
 %global kernelrela %{kernelrel}.x86_64
 
-BuildRequires:  kernel kernel-devel
+BuildRequires:  gcc kernel kernel-devel
 Requires:	kernel%{?_isa} == %{kernelrel}
 
 %description
