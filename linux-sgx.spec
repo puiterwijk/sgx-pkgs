@@ -8,6 +8,8 @@ URL:      https://github.com/intel/linux-sgx
 Source0:  https://github.com/intel/linux-sgx/archive/sgx_%{version}.tar.gz
 Source1:  sgx_packer.py
 
+%global debug_package %{nil}
+
 # SGX exists only for x86_64
 ExclusiveArch: x86_64
 
@@ -17,6 +19,8 @@ BuildRequires: gcc-c++ autoconf automake libtool systemd
 BuildRequires: ocaml ocaml-ocamlbuild redhat-rpm-config openssl-devel wget python
 # For the Platform SoftWare (PSW, includes AESMD)
 BuildRequires: openssl-devel libcurl-devel protobuf-devel cmake
+
+Requires(pre): shadow-utils
 
 
 %description
@@ -37,6 +41,7 @@ The repository provides a reference implementation of a Launch Enclave for 'Flex
 git init
 git add .
 git -c user.name=Builder -c user.email=builder@puiterwijk.org commit -sm init
+git clone https://github.com/intel/SGXDataCenterAttestationPrimitives.git external/dcap_source
 
 ./download_prebuilt.sh
 
@@ -44,8 +49,9 @@ make sdk_install_pkg psw_install_pkg DEBUG=1
 
 
 %install
+rm -rf %{_builddir}/out
 mkdir %{_builddir}/out
-python3 $SOURCE1 %{_builddir}/out linux/installer/common/{libsgx-enclave-common,psw}/BOMs/*_{base,x64}.txt
+python3 %{SOURCE1} %{_builddir}/out linux/installer/common/{libsgx-enclave-common,psw}/BOMs/*_{base,x64}.txt
 
 mkdir -p %{buildroot}/usr/lib64
 cp %{_builddir}/out/package/lib64/*.so %{buildroot}/usr/lib64/
@@ -58,13 +64,14 @@ rm -rf %{_builddir}/out/package/aesm/{data,conf}
 mkdir -p %{buildroot}/var/run/aesmd
 
 mkdir -p %{buildroot}%{_unitdir}
-sed -e "s:@aesm_folder@:/opt/intel/sgxpsw/aesm:" %{_builddir}/out/package/aesm/aesmd.service %{buildroot}%{_unitdir}/aesmd.service
+sed -e "s:@aesm_folder@:/opt/intel/sgxpsw/aesm:" %{_builddir}/out/package/aesm/aesmd.service >%{buildroot}%{_unitdir}/aesmd.service
 
 mkdir -p %{buildroot}/opt/intel/sgxpsw
-mv %{_builddir}/out/package/aesm %{buildroot}/opt/intel/sgxpsw
+cp -r %{_builddir}/out/package/aesm %{buildroot}/opt/intel/sgxpsw
 
 
 %files
+/usr/lib64/libsgx_enclave_common.so.1
 /usr/lib64/libsgx_enclave_common.so
 /usr/lib64/libsgx_uae_service.so
 /usr/lib64/libsgx_urts.so
@@ -73,6 +80,14 @@ mv %{_builddir}/out/package/aesm %{buildroot}/opt/intel/sgxpsw
 /var/run/aesmd
 %{_unitdir}/aesmd.service
 /opt/intel/sgxpsw
+
+
+%pre
+getent group aesmd  >/dev/null || groupadd -r aesmd
+getent passwd aesmd >/dev/null || \
+    useradd -r -g aesmd -d /var/opt/aesmd -s /sbin/nologin \
+    -c "User for aesmd" aesmd
+exit 0
 
 
 %changelog
